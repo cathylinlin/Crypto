@@ -1,2 +1,2 @@
-# Crypto
-learn_crypto
+# 数学
+相关数学知识
