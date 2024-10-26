@@ -40,6 +40,7 @@ mlist = rabin_attack(c, p*q, p, q)
 for m in mlist:
     print(long_to_bytes(m))
 ```
+代码参考了[NSS](https://www.nssctf.cn/index) [ctf wiki](https://ctf-wiki.org/crypto/asymmetric/rsa/rsa_e_attack/#rsa-rabin)
 
 ### Wiener Attack  
 维纳攻击的细节我们留到 $e$ 非常大的时候再讨论。
