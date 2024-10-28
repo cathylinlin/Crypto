@@ -120,7 +120,28 @@ def Cipolla(n,p):
 直接爆破，或者加几个 $n$ 上去开方。或者......    
 
 ### Broadcast Attack   
-广播攻击啊...... 我们留到 Attack from many times 再讨论
+广播攻击啊...... 我们留到 Attack from many times 再讨论   
+
+### Relater Message Attack  
+相关信息攻击......我们留到 Attack from many times 再讨论   
+
+## $e=4$   
+$m^4={(m^2)}^{2}$  这样就很明显了。   
+
+
+## $e\leq {2}^{10}$    
+在这里就很少针对 $e$ 攻击了，通常需要特殊的构造。   
+
+## $e=65537$   
+典中典，不讨论。   
+
+## $e\approx n$
+$e$ 非常大，接近 $n$ ，那我们就得用...   
+### Wiener Attack  
+维纳攻击，借连分数定理处理 $e$ 很大（重要的实际上是 $d$ 很小）。   
+**连分数定理** :（待续）
+
+
 
 
 
