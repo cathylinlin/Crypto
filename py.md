@@ -13,4 +13,15 @@ reduce() 函数相当于迭代。
 reduce(func, iterable[, initializer])   
 ```
 
+### 1.3   
+求离散对数   
+sympy库discrete_log()函数   
+例如：   
+```
+x = sympy.discrete_log(41, 15, 7)  
+print(x)
+#x=3
+```
+即是 7^3 ≡ 15 (mod 41)   
+
 
