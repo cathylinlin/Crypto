@@ -24,4 +24,44 @@ print(x)
 ```
 即是 7^3 ≡ 15 (mod 41)   
 
+### 1.4     
+sage 的一些函数用法   
+```
+gcd(x,y) #求(x,y)
+xgcd(x,y) #求(x,y) 返回ax+by=(x,y)的一组解
+n.factorial()  #求n!
+crt([a_0,a_1,...,a_i-1],[m_0,m_1,...,a_i-1])  #CRT $x\equiv a_i \pmod{m_i}$
+legendre_symbol(d,p) #求(d\p)
+jacobi_symbol(d,P)   #求(d\P)
+Zmod(m)(a).multiplicative_order() #$a^d\equiv 1\pmod{m}$ 求d
+Zmod(m)(a).log(g)  #$g^?\equiv a\pmod{m}$ 求?
+primitive_root(n)  #求原根
+Zmod(m)(a).nth_root(n)  #求 $x^n\equiv a\pmod{m}$ 的根
+P.<x>=PolynomialRing(Zmod(n)) #构造Z上的关于x的整系数多项式
+#f=....
+f=f.monic()   #转化为首一多项式
+f.coefficients()  #返回多项式系数列表
+
+#$a^x\equiv b\pmod{n}$
+x=discrete_log(mod(b,n),mod(a,n))
+
+x=f.small_roots(x.bits.beta=0.4[,epsilon=0.02]) #求解$f(x)=0\pmod{n}$ beta可以取0.3 后面那个暂时不知道
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
