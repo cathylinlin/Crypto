@@ -27,6 +27,20 @@ ${g}^{\varphi}\equiv {g}^{(p-1)(q-1)}\equiv 1\pmod{p}$
 
 不过容易注意到 ${q}^{-1}\cdot \varphi\equiv {q}^{-1} -1\pmod{p}$     
 
+## p leak     
+p高位泄露。    
+暂记为 ${p}_{high}=p_0$ ，泄露位数为 $h$ ， $p$ 位数为 $t$ ，未知部分为 $x$   
+$p=p_0\cdot {2}^{t-h}+x$    
+为解出 $x$ ，我们构造PR.<x> ，并求出small_roots    
+```
+PR.<x> = PolynomialRing(Zmod(n))
+f = p0*2**(h-t)+x
+f = f.monic()
+out_p = f.small_roots(2**?,beta = 0.4,epsilon = 0.03)
+p = gcd(int(f(out_p[0])),n)
+print(p)
+```
+p低位泄露，中间位泄露同理。   
 
 
 
