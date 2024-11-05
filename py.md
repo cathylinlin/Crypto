@@ -47,6 +47,8 @@ x=discrete_log(mod(b,n),mod(a,n))
 
 x=f.small_roots(x.bits.beta=0.4[,epsilon=0.02]) #求解$f(x)=0\pmod{n}$ beta可以取0.3 后面那个暂时不知道
 ```
+### 1.5    
+bytes_to_long()等价于转256进制。再转二进制，位数就x8。
 
 
 
