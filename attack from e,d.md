@@ -1,5 +1,6 @@
-# Attack from e   
-这次我们讲讲针对e的攻击  
+# Attack from e,d    
+这次我们讲讲针对e的攻击    
+针对d的攻击不也是和e等价？这下不得不写了。    
 
 ## $e=2$  
 直接开平方，或者加一些 $n$ 上去开平方，或者  
@@ -151,7 +152,80 @@ $\varphi(n)\approx n$ （什么时候？）
 然后对前者进行连分数展开，再对每项求渐近分数，直到包含 $k$ $d$   
 
 **原理**：   
-见数论文档。
+见数论文档。       
+
+## d leak    
+### d 低位泄露    
+设d低位为 $d_0$ ，泄露了约 $t$ 比特位    
+$ed=k\varphi +1$   
+设 $s = p+q$   
+$ed=k(n-s+1)+1$    
+$ed_0\equiv k(n-s+1)+1\pmod{2^t}$     
+注意到： $p^2-sp+n=p^2-p^2-pq+pq=0$     
+$ed_0p-k(p^2-sp+n)\equiv kpn+kp+p-kp^2-kn\equiv ed_0p\pmod{2^t}$     
+$k$ 在d leak题中一般可以爆破出来，然后解上述同余方程就得到p的低位，接着就是p leak，最后就是常规RSA。     
+```
+def get_full_p(p_low, n,d_low):
+    PR.<x> = PolynomialRing(Zmod(n))
+    d_lowbits = d_low.nbits()
+    nbits = n.nbits()
+    p_lowbits = p_low.nbits()
+    f = 2^p_lowbits*x + p_low
+    f = f.monic()
+    roots = f.small_roots(X=2^(nbits//2-p_lowbits), beta=0.4)  
+    if roots:
+        x0 = roots[0]
+        p = gcd(2^d_lowbits*x0 + p_low, n)
+        return ZZ(p)
+
+
+def find_p_low(d_low, e, n):
+    X = var('X')
+    for k in range(1, e+1):
+        results = solve_mod([e*d_low*X == k*n*X + k*X + X-k*X**2 - k*n], 2^d_low.nbits())
+        for x in results:
+            p_low = ZZ(x[0])
+            p = get_full_p(p_low, n,d_low)
+            if p and p != 1:
+                return p
+```
+代码参考了[Emmaaaaaaaaaa](https://blog.csdn.net/XiongSiqi_blog/article/details/130171830)    
+
+### d 高位泄露    
+和低位泄露类似，但不需要模，解出来就是p 高位泄露的p leak ，最后常规RSA   
+```
+from tqdm import *
+from Crypto.Util.number import *
+def get_full_p(p_high, n,d_high,bits):
+    PR.<x> = PolynomialRing(Zmod(n))    
+    f = x + p_high
+    f = f.monic()
+    roots = f.small_roots(X=2^(bits + 4), beta=0.4)  
+    if roots:
+        x0 = roots[0]
+        p = gcd(x0 + p_high, n)
+        return ZZ(p)
+
+
+def find_p_high(d_high, e, n,bits):
+    PR.<X> = PolynomialRing(RealField(1000))
+    for k in tqdm(range(1, e+1)):
+        f=e * d_high * X - (k*n*X + k*X + X-k*X**2 - k*n)
+        results = f.roots()
+        if results:
+            for x in results:
+                p_high = int(x[0])
+                p = get_full_p(p_high, n,d_high,bits)
+                if p and p != 1:
+                    return p
+```
+代码参考了[Emmaaaaaaaaaa](https://blog.csdn.net/XiongSiqi_blog/article/details/130171830)   
+
+
+
+
+
+
 
 
 
