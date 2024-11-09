@@ -24,6 +24,16 @@ $h_2\equiv (lp+x)^q\pmod{n}$
 $h_2\equiv lp+x\pmod{q}$    
 于是有： $(h_2-x)^t\cdot k^t\equiv (lkp)^t\pmod{q}$     
 $h_1\cdot l^t\equiv (lkp)^t\pmod{q}$   
-最后gcd就可以求出 $q$ 了   
+最后gcd就可以求出 $q$ 了    
+
+### 2.2    
+一类数论推导题。   
+特点是给了一个Hint,是关于 $p,q,n$ 的同余式。我们的目标还是gcd.   
+举个例子：   
+$h\equiv (kp+t)^q\pmod{n}$   
+好的方法是去模 $p$ ，而不是模 $q$ .    
+$h\equiv t^q\pmod{p}$   
+注意到：  $t^n\equiv t^{p\cdot q}\equiv t^q\pmod{p}$   
+之后求 $gcd(h,t^n)$ 就能求出 $p$ 了。
 
 
