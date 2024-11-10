@@ -29,6 +29,7 @@ sage 的一些函数用法
 ```
 gcd(x,y) #求(x,y)
 xgcd(x,y) #求(x,y) 返回ax+by=(x,y)的一组解
+a = divisors(e)  #返回e的因子列表
 n.factorial()  #求n!
 crt([a_0,a_1,...,a_i-1],[m_0,m_1,...,a_i-1])  #CRT $x\equiv a_i \pmod{m_i}$
 legendre_symbol(d,p) #求(d\p)
