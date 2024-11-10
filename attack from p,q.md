@@ -9,10 +9,29 @@ $e\mid \varphi$ ，可以检验一下 $e\mid p-1,q-1?$ 如果有一个不，就�
 
 
 
-## $e\mid p$    
-AMM算法。   
+## $e\mid p-1$    
+### AMM算法。   
+### 有限域开方 + CRT   
+适用于 $e$ 比较小，且 $e\mid p-1,q-1$ 的情况。   
+```
+R.<x> = Zmod(p)[] #还有q
+f = x ^ e - c
+f = f.monic()
+res1 = f.roots()
+prnt(res1)
 
-
+from Crypto.Util.number import  *
+import libnum
+#p,q,n,c,e
+# res1,res2
+for i in res1:
+    for j in res2:
+        m =libnum.solve_crt([int(i[0]),int(j[0])],[p,q])     #c3=libnum.solve_crt([c1,c2], [q1,q2])
+        flag = long_to_bytes(m)
+        if flag.startswith(b'flag'):
+            print(flag)
+```
+代码参考了[Emmaaaaaaaaaa](https://blog.csdn.net/XiongSiqi_blog/article/details/130296035)    
 
 
 ## ${q}^{-1}\cdot q\equiv 1\pmod{p}$     
