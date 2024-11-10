@@ -4,8 +4,8 @@
 ## many $p$   
 多素数 $n$ ，实际上是考察会不会算欧拉函数。   
 
-## $e\mid phi$   
-
+## $e\mid \varphi$    
+$e\mid \varphi$ ，可以检验一下 $e\mid p-1,q-1?$ 如果有一个不，就以那个作为模数做常规rsa。
 
 
 
