@@ -34,6 +34,26 @@ $h\equiv (kp+t)^q\pmod{n}$
 好的方法是去模 $p$ ，而不是模 $q$ .    
 $h\equiv t^q\pmod{p}$   
 注意到：  $t^n\equiv t^{p\cdot q}\equiv t^q\pmod{p}$   
-之后求 $gcd(h,t^n)$ 就能求出 $p$ 了。
+之后求 $gcd(h,t^n)$ 就能求出 $p$ 了。      
+
+### 2.3    
+一类数论推导题。     
+特点是给了hint，是关于 $m,n$ 的同余式。我们的目标是展开。    
+举个例子：   
+$h\equiv (tn^2+1)^m\pmod{n^3}$   
+用二项式展开：   
+$h\equiv tmn^2+1\pmod{n^3}$   
+接着比较 $h,m,n$ 的比特位数，判断下一步怎么做。   
+
+
+
+
+
+
+
+
+
+
+
 
 
