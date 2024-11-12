@@ -220,7 +220,42 @@ def find_p_high(d_high, e, n,bits):
                 if p and p != 1:
                     return p
 ```
-代码参考了[Emmaaaaaaaaaa](https://blog.csdn.net/XiongSiqi_blog/article/details/130171830)   
+代码参考了[Emmaaaaaaaaaa](https://blog.csdn.net/XiongSiqi_blog/article/details/130171830)     
+
+## $N,e,d$   
+如果已知 $N,e,d$ 能不能求出 $p,q$来呢？   
+还真能。   
+```
+import random
+from math import gcd
+
+def attack(e: int, d: int, n: int) -> tuple:
+    # p, q
+    result = [0, 0]
+    # k = de - 1
+    k = d * e - 1
+    
+    while True:
+        # Choose random g, 1 < g < n
+        g = random.randint(2, n-1)
+        k1 = k
+        
+        # Calculate t and g^(k/2^i) together
+        while k1 % 2 == 0:
+            # If k is even, divide by 2
+            k1 >>= 1
+            # Now g^(k/2^i) = g^k1
+            x = pow(g, k1, n)
+            # Calculate y = gcd(x-1, n), directly assign to p (result[0])
+            result[0] = gcd(x - 1, n)
+            # If x > 1 and y = gcd(x-1, n) > 1
+            if x > 1 and result[0] > 1:
+                result[1] = n // result[0]
+                return tuple(result)
+
+```
+有一说一，像AMM算法。   
+   
 
 
 
