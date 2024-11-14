@@ -50,7 +50,15 @@ $h\equiv tmn^2+1\pmod{n^3}$
 wiener attack的其他用法。   
 > 任何比例非常接近另外一个已知比例情况下想到维纳攻击
 
-一般见于给了一个含很多参数的同余式。   
+一般见于给了一个含很多参数的同余式。    
+
+## 4   
+### 4.1  dp leak    
+思路是gcd。    
+$d_p\equiv d\pmod{p-1}$   
+$ed\equiv 1\pmod{\varphi} \Rightarrow ed\equiv 1\pmod{p-1} \Rightarrow ed_p\equiv 1\pmod{p-1}$   
+$a^{ed_p}\equiv a^{k(p-1)+1}\equiv a\pmod{p} \Rightarrow gcd(a^{ed_p}-a,n)=p$    
+
    
 
 
