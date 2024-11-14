@@ -1,2 +1,2 @@
-# Crypto
-learn_crypto
+# LCG,OTP,PRNG    
+好随机啊...   
