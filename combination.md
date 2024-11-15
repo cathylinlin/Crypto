@@ -64,8 +64,24 @@ $ed\equiv 1\pmod{\varphi} \Rightarrow ed\equiv 1\pmod{p-1} \Rightarrow ed_p\equi
 $a^{ed_p}\equiv a^{k(p-1)+1}\equiv a\pmod{p} \Rightarrow gcd(a^{ed_p}-a,n)=p$    
 
    
+## 5   
+### 5.1   $m\pmod p$ and  $m\pmod q$    
+let $x\equiv m^p\pmod n \Rightarrow x\equiv m\pmod p$   
+$y\equiv x\pmod q$   
+$x=m+k_1p$   
+$y=m+k_2q$   
+$xy=m^2+m(k_1p+k_2q)+k_1k_2pq \Rightarrow xy\equiv m^2+m(x-m+y-m)\pmod n$   
+using sage   
+```
+R.<m> = PolynomialRing(Zmod(n))
 
-
+f = x*y - m^2 - m*(x - m + y - m)
+f = f.monic()
+root = f.small_roots(X=2^?)
+if root != []:
+    print(long_to_bytes(int(root[0])))
+```
+参考了[这位师傅](https://dexterjie.github.io/2024/07/26/%E9%9D%9E%E5%AF%B9%E7%A7%B0%E5%8A%A0%E5%AF%86/RSA1/#4-pow-m-p-n-%E5%92%8Cpow-m-q-n)   
 
 
 
