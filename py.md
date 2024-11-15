@@ -49,9 +49,24 @@ x=discrete_log(mod(b,n),mod(a,n))
 x=f.small_roots(x.bits.beta=0.4[,epsilon=0.02]) #求解$f(x)=0\pmod{n}$ beta可以取0.3 后面那个暂时不知道
 ```
 ### 1.5    
-bytes_to_long()等价于转256进制。再转二进制，位数就x8。
+bytes_to_long()等价于转256进制。再转二进制，位数就x8。    
 
-
+### 1.6    
+求 $m^e\equiv c\pmod{n}$ $e$ 又不大不小？    
+可以用sympy库里的 nthroot_mod()函数   
+```
+m = nthroot_mod(c,e,p)
+```
+当然也可以用sage解方程    
+```
+# c = m ^ 256 mod p
+P.<x> = Zmod(p)[]
+f = x ^ 256 - c
+a = f.roots()
+for i in a:
+    print(long_to_bytes(int(i[0])))
+```
+参考了[emmaaaaaaaaaa](https://blog.csdn.net/XiongSiqi_blog/article/details/130835128)
 
 
 
