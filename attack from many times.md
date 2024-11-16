@@ -83,7 +83,59 @@ if __name__ == '__main__':
     print("m2:", m1 + diff)
 
 ```
-代码参考了[KBThe0phi1us](https://kbthe0phi1us.github.io/2023/02/16/coppersmith%E7%9B%B8%E5%85%B3%E6%94%BB%E5%87%BB/index.html)   
+代码参考了[KBThe0phi1us](https://kbthe0phi1us.github.io/2023/02/16/coppersmith%E7%9B%B8%E5%85%B3%E6%94%BB%E5%87%BB/index.html)       
+
+### half gcd   
+相关消息，但是e很大。   
+```
+from Crypto.Util.number import *
+import sys
+
+def HGCD(a, b):
+    if 2 * b.degree() <= a.degree() or a.degree() == 1:
+        return 1, 0, 0, 1
+    m = a.degree() // 2
+    a_top, a_bot = a.quo_rem(x^m)
+    b_top, b_bot = b.quo_rem(x^m)
+    R00, R01, R10, R11 = HGCD(a_top, b_top)
+    c = R00 * a + R01 * b
+    d = R10 * a + R11 * b
+    q, e = c.quo_rem(d)
+    d_top, d_bot = d.quo_rem(x^(m // 2))
+    e_top, e_bot = e.quo_rem(x^(m // 2))
+    S00, S01, S10, S11 = HGCD(d_top, e_top)
+    RET00 = S01 * R00 + (S00 - q * S01) * R10
+    RET01 = S01 * R01 + (S00 - q * S01) * R11
+    RET10 = S11 * R00 + (S10 - q * S11) * R10
+    RET11 = S11 * R01 + (S10 - q * S11) * R11
+    return RET00, RET01, RET10, RET11
+    
+def GCD(a, b):
+    print(a.degree(), b.degree())
+    q, r = a.quo_rem(b)
+    if r == 0:
+        return b
+    R00, R01, R10, R11 = HGCD(a, b)
+    c = R00 * a + R01 * b
+    d = R10 * a + R11 * b
+    if d == 0:
+        return c.monic()
+    q, r = c.quo_rem(d)
+    if r == 0:
+        return d
+    return GCD(d, r)
+
+sys.setrecursionlimit(500000)
+
+R.<x> = PolynomialRing(Zmod(n2))
+f = x^e - c1
+g = (n1 - x)^e - c2
+
+res = GCD(f,g)
+print(long_to_bytes(int(-res.monic().coefficients()[0])))
+
+```
+代码参考了[这位师傅](https://blog.csdn.net/XiongSiqi_blog/article/details/130978226)     
 
 
 ## many $n$   
