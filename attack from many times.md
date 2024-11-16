@@ -15,11 +15,7 @@ m_s0 = pow(c1,s1,n)*pow(c2,s2,n)%n
 m = long_to_bytes(gmpy2.iroot(m_s0,s0)[0])
 print(m)
 ```
-参考了[这位师傅](https://blog.csdn.net/XiongSiqi_blog/article/details/130836354)   
-
-
-
-
+参考了[这位师傅](https://blog.csdn.net/XiongSiqi_blog/article/details/130836354)      
 
 
 ## many $m$    
@@ -44,6 +40,50 @@ m=franklinReiter(n,e,c1,c2,a,b)
 print(libnum.n2s(int(m)))
 ```
 代码参考了[这位师傅](https://blog.csdn.net/XiongSiqi_blog/article/details/130978226)   
-值得一提的是，上述脚本适合加密指数较小的情况。   
+值得一提的是，上述脚本适合加密指数较小的情况。     
+
+### short-pad attack   
+上述的b 未知，但是比较小。   
+原理，暂不了解。
+```
+#Sage
+def short_pad_attack(c1, c2, e, n):
+    PRxy.<x,y> = PolynomialRing(Zmod(n))
+    PRx.<xn> = PolynomialRing(Zmod(n))
+    PRZZ.<xz,yz> = PolynomialRing(Zmod(n))
+    g1 = x^e - c1
+    g2 = (x+y)^e - c2
+    q1 = g1.change_ring(PRZZ)
+    q2 = g2.change_ring(PRZZ)
+    h = q2.resultant(q1)
+    h = h.univariate_polynomial()
+    h = h.change_ring(PRx).subs(y=xn)
+    h = h.monic()
+    kbits = n.nbits()//(2*e*e)
+    diff = h.small_roots(X=2^kbits, beta=0.4)[0]  # find root < 2^kbits with factor >= n^0.4
+    return diff
+def related_message_attack(c1, c2, diff, e, n):
+    PRx.<x> = PolynomialRing(Zmod(n))
+    g1 = x^e - c1
+    g2 = (x+diff)^e - c2
+    def gcd(g1, g2):
+        while g2:
+            g1, g2 = g2, g1 % g2
+        return g1.monic()
+    return -gcd(g1, g2)[0]
+if __name__ == '__main__':
+    n = 
+    e = 
+    c1 =
+    c2 = 
+    diff = short_pad_attack(c1, c2, e, n)
+    print("difference of two messages is %d" % diff)
+    m1 = related_message_attack(c1, c2, diff, e, n)
+    print("m1:", m1)
+    print("m2:", m1 + diff)
+
+```
+代码参考了[KBThe0phi1us](https://kbthe0phi1us.github.io/2023/02/16/coppersmith%E7%9B%B8%E5%85%B3%E6%94%BB%E5%87%BB/index.html)   
+
 
 ## many $n$   
