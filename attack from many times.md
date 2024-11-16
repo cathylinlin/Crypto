@@ -23,7 +23,7 @@ print(m)
 
 
 ## many $m$    
-### 相关消息攻击   
+### Relater Message Attack    
 形如 $c_1\equiv m^e\pmod n$   
 $c_2\equiv (am+b)^e\pmod n$    
 将此二式化为模 $n$ 意义下的多项式，$x-m$ 显然是这两多项式共同的因式。用欧几里得算法处理。   
