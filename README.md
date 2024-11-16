@@ -1,2 +1,2 @@
-# Crypto
-learn_crypto
+# ELG,ECC   
+别急
