@@ -22,5 +22,28 @@ print(m)
 
 
 
-## many $m$   
+## many $m$    
+### 相关消息攻击   
+形如 $c_1\equiv m^e\pmod n$   
+$c_2\equiv (am+b)^e\pmod n$    
+将此二式化为模 $n$ 意义下的多项式，$x-m$ 显然是这两多项式共同的因式。用欧几里得算法处理。   
+```
+import binascii
+def franklinReiter(n,e,c1,c2,a,b):
+    PR.<x> = PolynomialRing(Zmod(n))
+    g1 = (x)^e - c1
+    g2 = (a*x+b)^e - c2
+
+    def gcd(g1, g2):
+        while g2:
+            g1, g2 = g2, g1 % g2
+        return g1.monic() # 
+    return -gcd(g1, g2)[0]
+
+m=franklinReiter(n,e,c1,c2,a,b)
+print(libnum.n2s(int(m)))
+```
+代码参考了[这位师傅](https://blog.csdn.net/XiongSiqi_blog/article/details/130978226)   
+值得一提的是，上述脚本适合加密指数较小的情况。   
+
 ## many $n$   
