@@ -73,5 +73,26 @@ $n\equiv p{q}_ {low}\equiv {p}_ {low}{q}_ {low}\equiv {n}_{low}\pmod{2^x}$
 于是就转变为p的首尾泄露了。    
 
 
+## p^q(xor)   
+不知道怎么说，反正就是一位一位爆破。    
+```
+# 爆破p,q，从低位开始
+plist,qlist = [0],[0]
+mod = 1
+for i in range(1024):
+    mod *= 2
+    next_plow,next_qlow = [],[]
+    for pl,ql in zip(plist,qlist):
+        for ph,qh in product([0,1],repeat = 2): # 得到(0,0),(0,1),(1,0),(1,1)
+            p_mod = ph * (mod // 2) + pl
+            q_mod = qh * (mod // 2) + ql
+            if p_mod * q_mod % mod == n % mod and  p_mod ^ q_mod == p_xor_q % mod:
+                next_qlow.append(q_mod)
+                next_plow.append(p_mod)
+    plist,qlist = next_plow,next_qlow
+```
+代码来自 [Emmmaaaaaaaaaa](https://blog.csdn.net/XiongSiqi_blog/article/details/131025906)    
+
+
 
 
