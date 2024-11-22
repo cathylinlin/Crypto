@@ -14,7 +14,7 @@ $$\mathbf{L}(B)=\{\sum_{i=1}^{n} x_i \mathbf{b}_{i}:x_i\in\mathit{Z},i=1,2,...,n
 格是偏序集(什么是偏序集？)    
 
 ## lattice's problems    
-CVP,SVP,BDD,LWE...    
+CVP,SVP,BDD,GGH,(R)LWE,HNP,HSSP,HLCP...    
 
 ## an important algonithm    
 LLL algonithm   
