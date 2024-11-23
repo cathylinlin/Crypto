@@ -16,8 +16,41 @@ $$\mathbf{L}(B)=\{\sum_{i=1}^{n} x_i \mathbf{b}_{i}:x_i\in\mathit{Z},i=1,2,...,n
 ## lattice's problems    
 CVP,SVP,BDD,GGH,(R)LWE,HNP,HSSP,HLCP...    
 
-## an important algonithm    
-LLL algonithm   
-看不懂。   
-通过LLL，输入一个坏基，可以输出较小的正交性好的基。    
+## Important algorithms    
+### LLL algorithm   
+通过正交化基向量并检验条件以提高基向量正交性。   
+通过LLL，输入一个坏基，可以输出较小的正交性好的基。一般好基的第一个向量范数最小。    
+
+```
+#矩阵
+M = Matrix([[10, 12], [15, 19]])
+# 造格
+L = Lattice(M)
+#格的基
+print(L.basis())
+#LLL
+LLL_reduced_lattice = L.lll()
+#新基
+print(LLL_reduced_lattice.basis())
+```
+
+### BKZ algorithm    
+LLL算法并非完美。    
+BKZ算法可以给出正交性更好的基。   
+```
+# 基矩阵
+M = Matrix([[1, 2], [3, 4]])
+# 造格
+L = Lattice(M)
+# 原始格基
+print(L.basis())
+
+# BKZ算法
+# beta参数,指定块大小
+beta = 2
+BKZ_reduced_lattice = L.lattice_bkkz(beta)
+
+# 新基
+print(BKZ_reduced_lattice.basis())
+```
 
