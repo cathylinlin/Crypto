@@ -12,10 +12,28 @@ $a\equiv cf\equiv frh+fm\equiv frgf^{-1}+fm\equiv rg+fm\pmod p$
 $rg+mf<p\Rightarrow a=rg+fm$   
 $m\equiv (a\pmod g)\cdot f^{-1}\pmod p$   
 
-use lattice:   
+------------------------
+
+alaways, we just have `h` and `p` .   
+we can use lattice:   
+
 $h\equiv g\cdot f^{-1}\pmod p$   
 $hf\equiv g\pmod p$   
 $fh-kp=g$   
+(do not forget f=f)   
+
+let's create a lattice:  
+
+$$ \begin{bmatrix} f & -k \\ \end{bmatrix} \cdot 
+\begin{bmatrix} 
+1 & h \\
+0 & p \\
+\end{bmatrix} 
+= \begin{bmatrix} f & g \\ \end{bmatrix} $$   
+
+but,why this?And how to solve?   
+显然，当我们得到f时，密码几乎就被我们破译了。  
+（待续
 
 
 ### its true form   
