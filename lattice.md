@@ -16,10 +16,17 @@ $$\mathbf{L}(B)=\{\sum_{i=1}^{n} x_i \mathbf{b}_{i}:x_i\in\mathit{Z},i=1,2,...,n
 ## lattice's problems    
 CVP,SVP,BDD,GGH,(R)LWE,HNP,HSSP,HLCP...    
 
+## Something important  
+一个格中最短的非0向量有多长？  
+Hermite's Theorem 给出了一个上界。   
+每个n维格L，都包含一个向量满足：  
+$\parallel v\parallel \leq \sqrt{n}det(L)^{1/n}$   
+这也告诉了我们怎么造格。
+
 ## Important algorithms    
 ### LLL algorithm   
 通过正交化基向量并检验条件以提高基向量正交性。   
-通过LLL，输入一个坏基，可以输出较小的正交性好的基。一般好基的第一个向量范数最小。    
+通过LLL，输入一个坏基，经过正交化和短化，满足两个条件后，输出较小的正交性好的基。一般好基的第一个向量范数最小。    
 
 ```
 #矩阵,格
