@@ -1,6 +1,6 @@
 # Application of Lattice
 ## NTRU    
-### the simplest case   
+### -----the simplest case------   
 **加解密过程**：   
 1. 取大（素）数 `p`,`g`,随机数 `f`,   
     $g<f<p$  
@@ -48,14 +48,12 @@ but,why this?And how to solve?
 稍难一点的题目则会出现`f,g`并非最短向量的情况，那我们就需要在格和基都配上一个 `D（=2**？）`，使格的行列式大于含`f,g`的基的范数。这也就是“配平”。    
 再难一点的题目会让你构造3*3的格，只要记住我们在格的最后一列处理关系式，其他两列用恒等式（以及配平）即可。尽量不要让基的数差距过大，比如`[a,1,b]`.    
 
-------------------------------
-
-### its true form    
+### -----its true form-----    
 NTRU真正的模样自然是卷积多项式以及在环上的卷积多项式呀。   
 `Z[x]`表示整系数多项式。`(Z/pZ)[x]`表示整系数模p多项式 `(Z/pZ)[x]/x^N-1`表示整系数模p多项式模`x^N-1`后的多项式，这个记作 $R_{N,p}$ .  
 而多项式模`x^N-1`后就落在了(商)环上。   
 NTRU的加解密过程更新了多次，我尽量将重要的讲解出来。   
-
+（待续   
 
 ## knapsack(pack)    
 背包问题的内核是一个NP完全问题——子集和问题。  
@@ -80,16 +78,86 @@ $x_i>2x_{i-1} \Rightarrow x_n>\sum_{i=1}^{n-1}x_i$
 
 **格的方法**：   
 1985年，LLL算法论文发表后，背包加密的致命弱点显露了出来。   
-我们取横向量 
 
+公钥： $M=set(M_1,M_2,...,M_n)$    
+密文： $S=\sum_{i=1}^{n}x_iM_i$   
+解： $x=(x_1,x_2,...,x_n)$   
+
+我们取横向量   
+$v_1    =(2,0,0,...,0,M_1)$   
+$v_2    =(0,2,0,...,0,M_2)$   
+$v_n    =(0,0,0,...,2,M_n)$   
+$v_{n+1}=(1,1,1,...,1,S)$   
+
+the lattice :  
+
+$$
+\begin{bmatrix} 
+2 & 0 & 0 & \cdots & 0 & M_1 \\
+0 & 2 & 0 & \cdots & 0 & M_2 \\
+0 & 0 & 2 & \cdots & 0 & M_3 \\
+\vdots & \vdots & \vdots & \ddots & \vdots & \vdots \\
+0 & 0 & 0 & \cdots & 2 & M_n \\
+1 & 1 & 1 & \cdots & 1 & S \\
+\end{bmatrix} 
+$$
+
+令  $t=\sum_{i=1}^{n}x_iv_i -v_{n+1}$  
+这是一个坐标只有 $\pm 1$ 的向量。模长约是 $\sqrt{n}$   
+应该感到惊奇，格的每个向量模长都是非常大(2**2n)的，但它却能表示出如此小的向量。`t`几乎可以说是最小向量了。(SVP问题)   
+那就用LLL！  
+然后就很大概率解决了这个加密。   
+
+脚本：   
+```
+from Crypto.Util.number import *
+from gmpy2 import *
+pubkey=[]   #公钥
+c=          #密文
+
+#造格
+L = matrix(QQ,len(pubkey) + 1,len(pubkey) + 1)
+for i in range(len(pubkey)):
+    L[i,i] = 1
+    L[i,len(pubkey)] = pubkey[i]
+
+for i in range(len(pubkey)):
+    L[len(pubkey),i]=1/2
+    
+L[-1,-1] = c
+
+# LLL
+L = L.LLL()
+print(L)
+for i in tqdm(range(len(pubkey) + 1)):
+    M = L.row(i).list()[:-1]
+    flag = True
+    for m in M:
+        if m != 1/2 and m != -1/2: # 否定则为m = 1/2 或 -1/2，故此处and是合理的
+            flag = False
+            break
+    if flag:
+        m = ''
+        print(i,M)
+        for j in M:
+            if j == -1/2: # 此处并不确定哪个代表二进制1
+                m = '1' + m # 上面分析时说过，得出的是从低位到高位，故后面得出的数放前面可得正确m
+            else:
+                m = '0' + m
+        print(long_to_bytes(int(m,2)))
+        break
+```
+**未测试**
+
+代码参考了 [Emmmaaaaaaaaaa](https://blog.csdn.net/XiongSiqi_blog/article/details/132109655)
 
 **评价**：   
 优缺点都很明显：若要与RSA有同等安全性，公钥长度是巨大的。但是即使如此，它因几乎不做模幂运算，而比RSA等高效很多。   
+（待续   
 
 
 
-
-
+> 参考了 [HPS](https://link.springer.com/book/10.1007/978-1-4939-1711-2)
 
 
 
