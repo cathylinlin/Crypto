@@ -112,42 +112,44 @@ $$
 ```
 from Crypto.Util.number import *
 from gmpy2 import *
+from tqdm import tqdm
+
 pubkey=[]   #公钥
-c=          #密文
+c=     #密文
 
 #造格
-L = matrix(QQ,len(pubkey) + 1,len(pubkey) + 1)
-for i in range(len(pubkey)):
-    L[i,i] = 1
-    L[i,len(pubkey)] = pubkey[i]
+n=len(pubkey)
+L = matrix(ZZ,n + 1,n + 1)
+for i in range(n):
+    L[i,i] = 2
+    L[i,n] = pubkey[i]
 
-for i in range(len(pubkey)):
-    L[len(pubkey),i]=1/2
+for i in range(n):
+    L[len(pubkey),i]=1
     
 L[-1,-1] = c
 
 # LLL
 L = L.LLL()
-print(L)
-for i in tqdm(range(len(pubkey) + 1)):
-    M = L.row(i).list()[:-1]
-    flag = True
-    for m in M:
-        if m != 1/2 and m != -1/2: # 否定则为m = 1/2 或 -1/2，故此处and是合理的
-            flag = False
-            break
-    if flag:
-        m = ''
-        print(i,M)
-        for j in M:
-            if j == -1/2: # 此处并不确定哪个代表二进制1
-                m = '1' + m # 上面分析时说过，得出的是从低位到高位，故后面得出的数放前面可得正确m
-            else:
-                m = '0' + m
-        print(long_to_bytes(int(m,2)))
-        break
+#print(L)
+
+for i in tqdm(range(n)):
+    if(L[i][-1]!=0):
+        continue
+    for j in range(n):
+        if((L[i][j])**2!=1):
+            continue
+        else:
+            Lm=L[i]
+
+Lm=Lm*-1   #看情况是否需要*-1
+#print(Lm)
+mm=''
+for i in range(n):
+    mm+=str((Lm[i]+1)//2)
+print(long_to_bytes(int(mm,2)))
 ```
-**未测试**
+**测试完成，已修正**
 
 代码参考了 [Emmmaaaaaaaaaa](https://blog.csdn.net/XiongSiqi_blog/article/details/132109655)
 
