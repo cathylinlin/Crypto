@@ -23,8 +23,9 @@ CVP,SVP,BDD,GGH,(R)LWE,HNP,HSSP,HLCP...
 ## Something important  
 一个格中最短的非0向量有多长？  
 Hermite's Theorem 给出了一个上界。   
-每个n维格L，都包含一个向量满足：  
+> Hermite’s Theorem : 每个n维格L，都包含一个非零向量满足：  
 $\parallel v\parallel \leq \sqrt{n}det(L)^{1/n}$   
+
 这也告诉了我们怎么造格。
 
 ## Important algorithms    
