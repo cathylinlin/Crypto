@@ -78,6 +78,7 @@ $x_i>2x_{i-1} \Rightarrow x_n>\sum_{i=1}^{n-1}x_i$
 
 **格的方法**：   
 1985年，LLL算法论文发表后，背包加密的致命弱点显露了出来。   
+下面我们认定`n<300`   
 
 公钥： $M=set(M_1,M_2,...,M_n)$    
 密文： $S=\sum_{i=1}^{n}x_iM_i$   
@@ -154,14 +155,10 @@ print(long_to_bytes(int(mm,2)))
 代码参考了 [Emmmaaaaaaaaaa](https://blog.csdn.net/XiongSiqi_blog/article/details/132109655)
 
 **评价**：   
-优缺点都很明显：若要与RSA有同等安全性，公钥长度是巨大的。但是即使如此，它因几乎不做模幂运算，而比RSA等高效很多。   
-（待续   
-
-
+优缺点都很明显：若要与RSA有同等安全性，公钥长度是巨大的。但是即使如此，它因几乎不做模幂运算，而比RSA等高效很多。(LLL算法发表之前)    
+若`n<300`，显然不够安全。若`n>300`，公钥长度巨大。(LLL算法发表之后)   
 
 > 参考了 [HPS](https://link.springer.com/book/10.1007/978-1-4939-1711-2)
-
-
 
 ## LWE   
 ## HNP   
