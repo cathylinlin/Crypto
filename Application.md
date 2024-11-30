@@ -110,7 +110,7 @@ $$
 然后就很大概率解决了这个加密。   
 
 脚本：   
-```
+```python
 from Crypto.Util.number import *
 from gmpy2 import *
 from tqdm import tqdm
@@ -159,6 +159,20 @@ print(long_to_bytes(int(mm,2)))
 若`n<300`，显然不够安全。若`n>300`，公钥长度巨大。(LLL算法发表之后)   
 
 > 参考了 [HPS](https://link.springer.com/book/10.1007/978-1-4939-1711-2)
+
+## GGH    
+格密码中诞生比较早的加密方案。并不安全。   
+**加解密过程** ：
+
+
+
+
+
+
+
+
+
+
 
 ## LWE   
 ## HNP   
