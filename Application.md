@@ -49,11 +49,225 @@ but,why this?And how to solve?
 再难一点的题目会让你构造3*3的格，只要记住我们在格的最后一列处理关系式，其他两列用恒等式（以及配平）即可。尽量不要让基的数差距过大，比如`[a,1,b]`.    
 
 ### -----its true form-----    
-NTRU真正的模样自然是卷积多项式以及在环上的卷积多项式呀。   
-`Z[x]`表示整系数多项式。`(Z/pZ)[x]`表示整系数模p多项式 `(Z/pZ)[x]/x^N-1`表示整系数模p多项式模`x^N-1`后的多项式，这个记作 $R_{N,p}$ .  
+NTRU(pronounced en-tru¯)真正的模样自然是卷积多项式以及在环上的卷积多项式呀。   
+
+**名词解释**：  
+`Z[x]`表示整系数多项式。`(Z/pZ)[x]`表示整系数模p多项式,这个记作 $R_q$,`(Z/pZ)[x]/x^N-1`表示整系数模p多项式模`x^N-1`后的多项式，这个记作 $R_{N,p}$ .  
 而多项式模`x^N-1`后就落在了(商)环上。   
-NTRU的加解密过程更新了多次，我尽量将重要的讲解出来。   
-（待续   
+中心提升多项式：`(Z/qZ)[x]`上的，系数在 $(-q/2,q/2]$ 之间的多项式。   
+乘法逆元多项式： `a(x),a(x)^{-1}`在 $R_p$上， $a(x)a(x)^{-1}\equiv 1\pmod{x^N-1}$   
+三元多项式： $T(d_1,d_2)$ 定义为`R`上的多项式，有`d_1`个系数为`1`，有`d_2`个系数为`-1`，其余系数为`0`
+
+**加解密过程**：   
+1. 参数`(N,p,q,d)`满足素数`N,p`,`gcd(p,q)=gcd(N,q) = 1`, $q>(6d+1)p$
+2. alice选取 $f(x)\in T(d+1,d)$(存在 $R_p,R_q$上的乘法逆元多项式，无则重选)， $g(x)\in T(d,d)$ `f(x),g(x)`作为私钥
+3. alice计算`f(x)`在 $R_p,R_q$上的乘法逆元多项式 $F_p(x),F_q(x)$，保存
+4. alice计算 $h(x) = F_q(x)\cdot g(x) in R_q$作为公钥
+5. 加密：bob将明文转为 $R_p$上的中心提升多项式`m(x)`,选择随机多项式 $r(x)\in T(d,d)$,计算 $e(x)\equiv ph(x)*r(x)+m(x) \pmod{q}$作为密文
+6. bob把`e(x)`传给alice，alice计算中心提升多项式 $a(x)\equiv f(x)*e(x)\pmod{q}$
+7. 解密：最后alice计算 $b(x)\equiv F_p(x)*a(x)\pmod{p}$ `b(x)`即为`m(x)`
+
+**解密的正确性**：略   
+
+**格的方法**：   
+记公钥`h(x)`为 $h(x)=h_0+h_1x+h_2x^2+...+h_{N-1}x^{N-1}$   
+
+the lattice :
+
+$$
+M_{h}^{\text{NTRU}} = \left(
+\begin{array}{cccc|cccc}
+1 & 0 & \cdots & 0 & h_0 & h_1 & \cdots & h_{N-1} \\
+0 & 1 & \cdots & 0 & h_{N-1} & h_0 & \cdots & h_{N-2} \\
+\vdots & \vdots & \ddots & \vdots & \vdots & \vdots & \ddots & \vdots \\
+0 & 0 & \cdots & 1 & h_1 & h_2 & \cdots & h_0 \\
+\hline
+0 & 0 & \cdots & 0 & q & 0 & \cdots & 0 \\
+0 & 0 & \cdots & 0 & 0 & q & \cdots & 0 \\
+\vdots & \vdots & \ddots & \vdots & \vdots & \vdots & \ddots & \vdots \\
+0 & 0 & \cdots & 0 & 0 & 0 & \cdots & q \\
+\end{array}
+\right)
+$$
+
+格的左上为单位矩阵，右上为`h(x)`的系数矩阵，左下为零矩阵，右下为`q`倍单位矩阵。   
+通常我们记作：   
+
+$$
+\begin{bmatrix} 
+1 & h \\
+0 & q \\
+\end{bmatrix} 
+$$
+
+类似与整数的NTRU，令 $f(x)h(x)-qk(x)=g(x)$,有：
+
+$$ \begin{bmatrix} f & -k \\ \end{bmatrix} \cdot 
+\begin{bmatrix} 
+1 & h \\
+0 & q \\
+\end{bmatrix} 
+= \begin{bmatrix} f & g \\ \end{bmatrix} $$   
+
+**具体情况**： （待续
+
+脚本：  
+```python
+# Sage
+# Ref: https://www.osgeo.cn/sagemath/constructions/rings.html
+class NTRU:
+  def __init__(self, N, p, q, d):
+    self.debug = False
+
+    assert q > (6*d+1)*p
+    assert is_prime(N)
+    assert gcd(N, q) == 1 and gcd(p, q) == 1
+    self.N = N
+    self.p = p
+    self.q = q
+    self.d = d
+  
+    self.R_  = PolynomialRing(ZZ,'x')
+    self.Rp_ = PolynomialRing(Zmod(p),'xp')
+    self.Rq_ = PolynomialRing(Zmod(q),'xq')
+    x = self.R_.gen()
+    xp = self.Rp_.gen()
+    xq = self.Rq_.gen()
+    self.R  = self.R_.quotient(x^N - 1, 'y')
+    self.Rp = self.Rp_.quotient(xp^N - 1, 'yp')
+    self.Rq = self.Rq_.quotient(xq^N - 1, 'yq')
+
+    # order check in keyGen
+    #self.RpOrder = self.p^self.N - self.p
+    #self.RqOrder = self.q^self.N - self.q
+    self.RpOrder = self.p^(self.N - 1) - 1
+    self.RqOrder = (self.q^self.N - self.q) // (self.q-1)
+
+
+    self.sk, self.pk = self.keyGen()
+
+  def test(self):
+    assert self.debug == True
+    pass
+
+  def T(self, d1, d2):
+    assert self.N >= d1+d2
+    t = [1]*d1 + [-1]*d2 + [0]*(self.N-d1-d2)
+    shuffle(t)
+    return self.R(t)
+
+  # center lift
+  def lift(self, fx):
+    mod = Integer(fx.base_ring()(-1)) + 1  # emmm
+    return self.R([Integer(x)-mod if x > mod//2 else x for x in list(fx)])
+
+  def keyGen(self):
+    fx = self.T(self.d+1, self.d)
+    gx = self.T(self.d, self.d)
+
+    Fp = self.Rp(list(fx)) ^ (-1)                           # list emmm
+    assert pow(self.Rp(list(fx)), self.RpOrder-1) == Fp     # order checked
+    assert self.Rp(list(fx)) * Fp == 1                
+    
+    # Fq = self.Rq(fx) ^ (-1)   # wasted
+    Fq = pow(self.Rq(list(fx)), self.RqOrder - 1)     # invert
+    assert self.Rq(list(fx)) * Fq == 1                # order checked
+    
+    hx = Fq * self.Rq(list(gx))
+
+    sk = (fx, gx, Fp, Fq, hx)
+    pk = hx
+    return sk, pk
+
+  def setKey(self, fx, gx):
+    assert type(fx) == type('x^2 + 1')  # e.g.
+    assert type(gx) == type('x^2 - 1')  # emmm
+
+    try:
+      fx = self.R(fx)
+      gx = self.R(gx)
+
+      Fp = self.Rp(list(fx)) ^ (-1)
+      Fq = pow(self.Rq(list(fx)), self.RqOrder - 1)
+      hx = Fq * self.Rq(list(gx))
+
+      self.sk = (fx, gx, Fp, Fq, hx)
+      self.pk = hx
+      return True
+    except:
+      return False
+  
+  def getKey(self):
+    ssk = (
+          str(self.R_(list(self.sk[0]))),   # fx
+          str(self.R_(list(self.sk[1])))    # gx
+        )
+    spk = str(self.Rq_(list(self.pk)))      # hx
+    return ssk, spk
+   
+  def encrypt(self, m):
+    assert type(m) == type('x^2 + 1') # e.g.
+    assert self.pk != None
+    hx = self.pk
+    mx = self.R(m)
+    mx = self.Rp(list(mx))              # change m to Rp, TODO: assert m in Rp
+    mx = self.Rq(list(mx))              # change m to Rq
+
+    rx = self.T(self.d, self.d)
+    rx = self.Rq(list(rx))
+    
+
+    e = self.p * rx * hx + mx
+    #return e
+    return str(self.Rq_(list(e)))
+
+  def decrypt(self, e):
+    assert type(e) == type('xq^2 - 1')  # e.g.
+    assert self.sk != None
+    fx, gx, Fp, Fq, hx = self.sk
+
+    e = self.Rq(e)
+    ax = self.Rq(list(fx)) * e
+    a = self.lift(ax)                   # center lift
+    bx = Fp * self.Rp(list(a))
+    b = self.lift(bx)
+    
+    #return bx
+    return str(self.R_(list(b)))
+    
+if __name__ == '__main__':
+  mm = '-x^2 + x + 1'
+  ntru = NTRU(N=11, p=3, q=512, d=3)
+  #ntru.setKey('xp^2+1', 'xq^2-1')
+  
+  print('keyGen check:')
+  sk, pk = ntru.getKey()
+  print("fx = '%s'" % sk[0])
+  print("gx = '%s'" % sk[1])
+  print("hx = '%s'" % pk)
+  
+  print('\nencrypt/decrypt check:')
+  e = ntru.encrypt(mm)
+  print("e = '%s'" % e)
+  m = ntru.decrypt(e)
+  print(m)
+  assert m == mm
+  print(m)
+
+  print('\ncheck setKey:')
+  fx = ''
+  gx = ''
+  hx = ''
+  e = ''
+  ntru.setKey(fx, gx)
+  m = ntru.decrypt(e)
+  assert m == mm
+  print(m)
+```
+**未测试**   
+代码参考了[Lazzaro](https://lazzzaro.github.io/2020/11/07/crypto-%E6%A0%BC%E5%AF%86%E7%A0%81/#%E6%A0%BC%E5%AF%86%E7%A0%81)   
+
+> 参考了 [HPS](https://link.springer.com/book/10.1007/978-1-4939-1711-2)
 
 ## knapsack(pack)    
 背包问题的内核是一个NP完全问题——子集和问题。  
