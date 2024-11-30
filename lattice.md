@@ -14,7 +14,11 @@ $$\mathbf{L}(B)=\{\sum_{i=1}^{n} x_i \mathbf{b}_{i}:x_i\in\mathit{Z},i=1,2,...,n
 格是偏序集(什么是偏序集？)    
 
 ## lattice's problems    
-CVP,SVP,BDD,GGH,(R)LWE,HNP,HSSP,HLCP...    
+CVP,SVP,BDD,GGH,(R)LWE,HNP,HSSP,HLCP...     
+
+> The Shortest Vector Problem (SVP): 在格`L`中找到最短非零向量（即欧几里得范数最小）
+
+> The Closest Vector Problem (CVP): 给定 $R^m$中的向量`v`，找到格L中与之最近的向量`u`（即  $\parallel u-v \parallel$最小）
 
 ## Something important  
 一个格中最短的非0向量有多长？  
