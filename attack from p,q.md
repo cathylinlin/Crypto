@@ -14,7 +14,7 @@ $e\mid \varphi$ ，可以检验一下 $e\mid p-1,q-1?$ 如果有一个不，就�
 ### AMM算法。   
 ### 有限域开方 + CRT   
 适用于 $e$ 比较小，且 $e\mid p-1,q-1$ 的情况。   
-```
+```python
 R.<x> = Zmod(p)[] #还有q
 f = x ^ e - c
 f = f.monic()
@@ -53,7 +53,7 @@ p高位泄露。
 暂记为 ${p}_{high}=p_0$ ，泄露位数为 $h$ ， $p$ 位数为 $t$ ，未知部分为 $x$   
 $p=p_0\cdot {2}^{t-h}+x$    
 为解出 $x$ ，我们构造 $PR.< x >$ ，并求出small_roots    
-```
+```python
 PR.<x> = PolynomialRing(Zmod(n))
 f = p0*2**(h-t)+x
 f = f.monic()
@@ -75,7 +75,7 @@ $n\equiv p{q}_ {low}\equiv {p}_ {low}{q}_ {low}\equiv {n}_{low}\pmod{2^x}$
 
 ## p^q(xor)   
 不知道怎么说，反正就是一位一位爆破。    
-```
+```python
 # 爆破p,q，从低位开始
 plist,qlist = [0],[0]
 mod = 1
