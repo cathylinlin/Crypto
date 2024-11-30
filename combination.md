@@ -72,7 +72,7 @@ $x=m+k_1p$
 $y=m+k_2q$   
 $xy=m^2+m(k_1p+k_2q)+k_1k_2pq \Rightarrow xy\equiv m^2+m(x-m+y-m)\pmod n$   
 using sage   
-```
+```python
 R.<m> = PolynomialRing(Zmod(n))
 
 f = x*y - m^2 - m*(x - m + y - m)
