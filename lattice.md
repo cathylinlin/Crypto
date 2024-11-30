@@ -33,7 +33,7 @@ $\parallel v\parallel \leq \sqrt{n}det(L)^{1/n}$
 通过正交化基向量并检验条件以提高基向量正交性。   
 通过LLL，输入一个坏基，经过正交化和短化，满足两个条件后，输出较小的正交性好的基。一般好基的第一个向量范数最小。    
 
-```
+```python
 #矩阵,格
 L = Matrix([[10, 12], [15, 19]])
 
@@ -44,7 +44,7 @@ LLL_reduced_lattice = L.lll()
 ### BKZ algorithm    
 LLL算法并非完美。    
 BKZ算法可以给出正交性更好的基。   
-```
+```python
 # 基矩阵，格
 L = Matrix([[1, 2], [3, 4]])
 
