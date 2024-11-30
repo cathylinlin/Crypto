@@ -19,7 +19,7 @@ $c\equiv c\cdot {c}^{\frac{p-1}{2}}\equiv {c}^{\frac{p+1}{2}}\pmod{p}$
 故 $m_p\equiv {c}^{\frac{p+1}{4}}\pmod{p}$ 当然 $m_p\equiv p-{c}^{\frac{p+1}{4}}\pmod{p}$   
 同理计算出 $m_q$ 一共四个，使用中国剩余定理（CRT）求出模 $n$ 下的4个根。   
 至于哪个是明文，就看题目了。  
-```
+```python
 def rabin_attack(c, n, p, q):
     c1 = pow(c, (p+1)//4, p)
     c2 = pow(c, (q+1)//4, q)
@@ -53,7 +53,7 @@ Cipolla算法用来解决 $x^2\equiv a\pmod{p}$ 的通解。其中 $a$ 是 $p$ �
 \equiv(\omega\cdot{({\omega}^{2})}^{\frac{p-1}{2}}+k)\cdot(\omega+k)
 \equiv (-\omega+k)\cdot(\omega+k)\equiv k^2-\omega^2\equiv a\pmod{p} $     
 其中用到了欧拉定理和二次剩余的知识。   
-```
+```python
 def Cipolla(n,p):
     # 如果n不是p的二次剩余 报错
     if testResidual(n,p) == False:
@@ -165,7 +165,7 @@ $ed_0\equiv k(n-s+1)+1\pmod{2^t}$
 注意到： $p^2-sp+n=p^2-p^2-pq+pq=0$     
 $ed_0p-k(p^2-sp+n)\equiv kpn+kp+p-kp^2-kn\equiv ed_0p\pmod{2^t}$     
 $k$ 在d leak题中一般可以爆破出来，然后解上述同余方程就得到p的低位，接着就是p leak，最后就是常规RSA。     
-```
+```python
 def get_full_p(p_low, n,d_low):
     PR.<x> = PolynomialRing(Zmod(n))
     d_lowbits = d_low.nbits()
@@ -194,7 +194,7 @@ def find_p_low(d_low, e, n):
 
 ### d 高位泄露    
 和低位泄露类似，但不需要模，解出来就是p 高位泄露的p leak ，最后常规RSA   
-```
+```python
 from tqdm import *
 from Crypto.Util.number import *
 def get_full_p(p_high, n,d_high,bits):
@@ -225,7 +225,7 @@ def find_p_high(d_high, e, n,bits):
 ## $N,e,d$   
 如果已知 $N,e,d$ 能不能求出 $p,q$来呢？   
 还真能。   
-```
+```python
 import random
 from math import gcd
 
