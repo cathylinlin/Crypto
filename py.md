@@ -9,7 +9,7 @@ product(‘0123456789’, repeat=5)
 ### 1.2   
 reduce() 函数相当于迭代。    
 函数将一个数据集合中的所有数据进行下列操作：用传给 reduce 中的函数 func（有两个参数）先对集合中的第 1、2 个元素进行操作，得到的结果再与第三个数据用 func 函数运算，最后得到一个结果。   
-```
+```python
 reduce(func, iterable[, initializer])   
 ```
 
@@ -17,7 +17,7 @@ reduce(func, iterable[, initializer])
 求离散对数   
 sympy库discrete_log()函数   
 例如：   
-```
+```python
 x = sympy.discrete_log(41, 15, 7)  
 print(x)
 #x=3
@@ -26,7 +26,7 @@ print(x)
 
 ### 1.4     
 sage 的一些函数用法   
-```
+```python
 gcd(x,y) #求(x,y)
 xgcd(x,y) #求(x,y) 返回ax+by=(x,y)的一组解
 a = divisors(e)  #返回e的因子列表
@@ -54,11 +54,11 @@ bytes_to_long()等价于转256进制。再转二进制，位数就x8。
 ### 1.6    
 求 $m^e\equiv c\pmod{n}$ $e$ 又不大不小？    
 可以用sympy库里的 nthroot_mod()函数   
-```
+```python
 m = nthroot_mod(c,e,p)
 ```
 当然也可以用sage解方程    
-```
+```python
 # c = m ^ 256 mod p
 P.<x> = Zmod(p)[]
 f = x ^ 256 - c
