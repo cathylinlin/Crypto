@@ -8,7 +8,7 @@
 求出 $s_1,s_2$ ,使得 $e_1s_1+e_2s_2=1$    
 $m\equiv {c_1}^{s_1}\cdot {c_2}^{s_2} \pmod{n}$     
 显然，把指数提出来再代入就有了    
-```
+```python
 s0,s1,s2 = gmpy2.gcdext(e1,e2)
 print(s0)
 m_s0 = pow(c1,s1,n)*pow(c2,s2,n)%n
@@ -23,7 +23,7 @@ print(m)
 形如 $c_1\equiv m^e\pmod n$   
 $c_2\equiv (am+b)^e\pmod n$    
 将此二式化为模 $n$ 意义下的多项式，$x-m$ 显然是这两多项式共同的因式。用欧几里得算法处理。   
-```
+```python
 import binascii
 def franklinReiter(n,e,c1,c2,a,b):
     PR.<x> = PolynomialRing(Zmod(n))
@@ -45,7 +45,7 @@ print(libnum.n2s(int(m)))
 ### short-pad attack   
 上述的b 未知，但是比较小。   
 原理，暂不了解。
-```
+```python
 #Sage
 def short_pad_attack(c1, c2, e, n):
     PRxy.<x,y> = PolynomialRing(Zmod(n))
@@ -87,7 +87,7 @@ if __name__ == '__main__':
 
 ### half gcd   
 相关消息，但是e很大。   
-```
+```python
 from Crypto.Util.number import *
 import sys
 
