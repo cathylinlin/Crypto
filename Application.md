@@ -388,16 +388,10 @@ print(long_to_bytes(int(mm,2)))
 毕竟有了LLL算法，也没多少安全性了。
 
 
-
-
-
-
-
-
-
-
-
 ## LWE   
+类似GGH.   
+
+
 ## HNP   
 ## others    
 ### 1   
