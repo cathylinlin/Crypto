@@ -60,15 +60,139 @@ ans=solve([f1,f2],[p,q])
 print(ans)
 ```  
 
+比赛时第一个加密卡了很久，一直没想到爆破，最后看了[Stellar Vector](https://dexterjie.github.io/2024/05/18/%E8%B5%9B%E9%A2%98%E5%A4%8D%E7%8E%B0/2024CISCN/?highlight=%E5%9B%BD%E8%B5%9B#hash%E2%80%94%E2%80%94%E5%A4%8D%E7%8E%B0) 才幡然醒悟。  
+
+
 **拓展**:  
 ### 1  
-在第一段加密中，如果给出的两个hint`px+qy`，`x`和`y`都比较大该怎么处理？  
+在第一段加密中，如果给出的两个hint`ap+bq`，`a`和`b`都比较大(2**t比特位)该怎么处理？  
+反正肯定不能爆破了。  
+要用格。  
+
+大致思路： 令 $x_1=a_2b_2,x_2=a_1b_1, -x3=a_1b_2+a_2b_1$  
+于是有： $0\equiv x_1h_1h_1 + x_2h_2h_2 + x_3h_1h_2 \pmod n$   
+造格：  
+
+the lattice: 
+
+$$
+\begin{bmatrix} 
+1 & 0 & 0 & h_1h_1 \\
+0 & 1 & 0 & h_2h_2 \\
+0 & 0 & 1 & h_1h_2 \\
+0 & 0 & 0 & n \\
+\end{bmatrix} 
+$$
+
+配平：用一个对角矩阵 ([1, 1, 1, 2**(t * 2)])  
+
+规约：规约后取第一行，大概率就是了。但也有可能是整数倍，需要注意。  
+
+后续处理： 令 $k=-(x_1h_1h_1 + x_2h_2h_2 + x_3h_1h_2) //n$  
+做多项式除法易知，此时 $k={a_2b_1-a_1b_2}^2$  
+令 $x_4=a_2b_1,x_5=a_1b_2$，全部联立解方程。  
+
+脚本：
+```python
+t=?
+def solve(h1, h2, n):
+    M = Matrix([
+        [1, 0, 0, h1 * h1],
+        [0, 1, 0, h2 * h2],
+        [0, 0, 1, h1 * h2],
+        [0, 0, 0, n]
+		])
+    W = diagonal_matrix([1, 1, 1, 2**(t * 2)])
+    M = (M*W).LLL()/W
+    row = M[0]
+    if row[0] < 0:
+        row *= -1
+    for i in range(1, 1000):
+        x1, x2, x3, _ = row*i           #处理倍数时的情况
+    
+        k = -(x1*h1*h1 + x2*h2*h2 + x3*h1*h2)//n
+        for x5 in [(isqrt(k)-x3)//2, (-isqrt(k)-x3)//2]:
+            x4 = -x5 - x3
+            for j in range(1, 1000):
+                a1 = gcd(x2, x5)//j     #处理倍数时的情况
+                a2 = gcd(x1, x4)//j     #处理倍数时的情况
+                b1 = x4 // a2
+                b2 = x5 // a1
+                p = int((a1 * h2 - a2 * h1) // isqrt(k))
+                if n%p == 0:
+                    return p, n//p
+
+    return 0, 0
+```
+
+参考了 [Connor](https://connor-mccartney.github.io/cryptography/other/apbq-rsa-ii-DUCTF-2023)   
+
 ### 2  
 在 1 的基础上，给了三个hint,该怎么处理？  
-### 3  
-在 1 的基础上，给了30个hint,该怎么处理？  
 
-（待续
+还是用格。  
+$h_i=a_ip+b_iq , 1\leq i\leq 3$
+令 $x_i=a_ip$  
+于是有： $h_jx_i-h_ix_j \equiv 0 \pmod{n}$   
+造格：  
+
+the lattice:  
+
+$$
+\begin{bmatrix} 
+h_2 & h_3 & 0 & 1 & 0 & 0 \\
+-h_1 & 0 & h_3 & 0 & 1 & 0 \\
+0 & -h_1 & -h_2 & 0 & 0 & 1 \\
+n & 0 & 0 & 0 & 0 & 0 \\
+0 & n & 0 & 0 & 0 & 0 \\
+0 & 0 & n & 0 & 0 & 0 \\
+\end{bmatrix} 
+$$
+
+用 $(x1,x2,x3,k,k,k)$相乘, 得到 $(0,0,0,x1,x2,x3)$   
+
+配平：乘个对角矩阵   
+
+后续处理：取gcd  
+
+脚本：
+```python
+t=?
+M = Matrix([
+    [h2 , h3 , 0  , 1, 0, 0],
+    [-h1, 0  , h3 , 0, 1, 0],
+    [0  , -h1, -h2, 0, 0, 1],
+    [n  , 0  , 0  , 0, 0, 0],
+    [0  , n  , 0  , 0, 0, 0],
+    [0  , 0  , n  , 0, 0, 0],
+])
+
+k = 2**(1024 + t)
+W = diagonal_matrix([k, k, k, 1, 1, 1])
+M = (M*W).LLL() / W
+for row in M:
+    if row[:3] != 0:
+        continue
+    _, _, _, x1, x2, x3 = row
+    for x in (x1, x2, x3):
+        p = gcd(x,n)
+        if p == 1:
+            continue
+        q = n//p
+        d = pow(e, -1, (p-1)*(q-1))
+        print(long_to_bytes(int(pow(c, d, n))))
+```
+
+参考了 [Connor](https://connor-mccartney.github.io/cryptography/other/apbq-rsa-ii-DUCTF-2023)   
+
+### 3  
+在 1 的基础上，给了100个hint,该怎么处理？  
+
+典中典apbq，今年强网杯就出了。  
+
+我想，用 2 的情况随便取三个套进去就不好了？  
+可能吧。但我看到还有别的方法。今天累了，过几天试一试。
+
 
 
 ## fffffhash  
@@ -174,11 +298,18 @@ hex_string = ''.join(f'{num:02x}' for num in res)
 print(hex_string)  #1df2006d2e3362153d001f53102a7c2a0a591516
 ```
 
+参考了[亚力山大抵](https://blog.csdn.net/m0_73951999/article/details/144501528) 和 [DexterJie](https://dexterjie.github.io/2024/05/18/%E8%B5%9B%E9%A2%98%E5%A4%8D%E7%8E%B0/2024CISCN/?highlight=%E5%9B%BD%E8%B5%9B#hash%E2%80%94%E2%80%94%E5%A4%8D%E7%8E%B0)
 
 
 
+## LWEWL  
+
+LWE问题还没深入学习过，今天累了。过几天再看吧。  
 
 
+## babypqc  
+
+听说有mt19937，但当时看到是一个后量子签名算法直接跑了。过几天再仔细看看。  
 
 
 
