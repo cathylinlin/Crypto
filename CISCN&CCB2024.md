@@ -69,8 +69,8 @@ print(ans)
 反正肯定不能爆破了。  
 要用格。  
 
-大致思路： 令 $x_1=a_2b_2,x_2=a_1b_1, -x3=a_1b_2+a_2b_1$  
-于是有： $0\equiv x_1h_1h_1 + x_2h_2h_2 + x_3h_1h_2 \pmod n$   
+大致思路： 令  $x_1=a_2b_2,x_2=a_1b_1, -x3=a_1b_2+a_2b_1$  
+于是有：  $0\equiv x_1h_1h_1 + x_2h_2h_2 + x_3h_1h_2 \pmod n$   
 造格：  
 
 the lattice: 
